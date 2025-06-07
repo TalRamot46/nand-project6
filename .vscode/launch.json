@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                ".\\shift\\Shift.asm"
+                ".\\p6\\"
             ],
         }
     ]

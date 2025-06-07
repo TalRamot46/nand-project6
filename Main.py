@@ -35,7 +35,9 @@ def first_pass(parser: Parser, symbol_table: SymbolTable) -> None:
             symbol_table.add_entry(parser.symbol(), parser.current_command_index)
             parser.remove_current_command()
         parser.advance()
-    # last instruction can't be an L_COMMAND
+    # Handling last instruction is a L_COMMAND
+    if parser.command_type() == L_COMMAND:
+        symbol_table.add_entry(parser.symbol(), parser.current_command_index)
     parser.restart()
 
 def second_pass(parser: Parser, symbol_table: SymbolTable) -> None:
@@ -58,6 +60,7 @@ def second_pass(parser: Parser, symbol_table: SymbolTable) -> None:
     parser.restart()
 
 def translate_instruction(parser: Parser) -> str:
+    instruction = ""
     if parser.command_type() == C_COMMAND:
         c = parser.comp()
         d = parser.dest()
@@ -75,12 +78,7 @@ def translate_instruction(parser: Parser) -> str:
         bin_symbol = Code.decimal_to_15bit(decimal_symbol)
 
         instruction = "0" + bin_symbol
-
-    else:
-        pass
-
     return instruction
-
 def translate_file(parser: Parser, output_file: typing.TextIO) -> None:
     output_lines = []
     while parser.has_more_commands():
