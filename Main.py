@@ -63,17 +63,21 @@ def translate_instruction(parser: Parser) -> str:
         d = parser.dest()
         j = parser.jump()
 
+        pref = Code.prefix(c)
         cc = Code.comp(c)
         dd = Code.dest(d)
         jj = Code.jump(j)
 
-        instruction = "111" + cc + dd + jj
+        instruction = pref + cc + dd + jj
 
     elif parser.command_type() == A_COMMAND:
         decimal_symbol = parser.symbol()
         bin_symbol = Code.decimal_to_15bit(decimal_symbol)
 
         instruction = "0" + bin_symbol
+
+    else:
+        pass
 
     return instruction
 
@@ -82,13 +86,10 @@ def translate_file(parser: Parser, output_file: typing.TextIO) -> None:
     while parser.has_more_commands():
         instruction = translate_instruction(parser)
         output_lines.append(instruction + '\n')
-        print(instruction)
         parser.advance()
     # one more iteration for the last instruction
     instruction = translate_instruction(parser)
     output_lines.append(instruction)
-    print(instruction)
-
     output_file.writelines(output_lines)
 
 

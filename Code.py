@@ -76,7 +76,15 @@ class Code:
             "D-M" : "1  0	1	0	0	1	1",
             "M-D" : "1  0	0	0	1	1	1",
             "D&M" : "1  0	0	0	0	0	0",
-            "D|M" : "1  0	1	0	1	0	1"
+            "D|M" : "1  0	1	0	1	0	1",
+
+            # extended C_COMMAND (shift)
+            "A<<" : "0	1	0	0	0	0	0",
+            "D<<" :	"0	1	1	0	0	0	0",
+            "M<<" : "1	1	0	0	0	0	0",
+            "A>>" :	"0	0	0	0	0	0	0",
+            "D>>" :	"0	0	1	0	0	0	0",
+            "M>>" :	"1	0	0	0	0	0	0"
         }
         try:
             comp_result = "".join(comp_dict[mnemonic].split())
@@ -133,8 +141,15 @@ class Code:
         padded_binary = binary_representation.zfill(15)  # Pad with leading zeros to make it 15 bits
         return padded_binary
 
+    @staticmethod
+    def prefix(mnemonic: str) -> str:
+        """
+        Returns:
+            str: the prefix mnemonic of the command.
+        """
+        if mnemonic in ['A<<', 'A>>', 'D<<', 'D>>', 'M<<', 'M>>']:
+            return "101"
+        else:
+            return "111"
 
-# Important:
-# Here I neglected the implementation of the Extended C-Command Specification 
-# as it isn't used in any of the test files.
 

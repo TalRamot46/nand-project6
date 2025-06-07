@@ -36,6 +36,8 @@ class Parser:
             comment_index = line.find('//')
             if comment_index != -1:
                 line = "".join(line[:comment_index].split())
+            else:
+                line = "".join(line.split())
 
             if line:  # Add non-empty instruction/label to the list
                 self.clean_input_lines.append(line)
@@ -74,7 +76,8 @@ class Parser:
         current_command = self.current_command
         if '@' in current_command:
             return A_COMMAND
-        if ";" in current_command or "=" in current_command:    
+        if ";" in current_command or "=" in current_command \
+            or '<<' in current_command or '>>' in current_command:    
             return C_COMMAND
         if '(' in current_command:
             return L_COMMAND
@@ -91,7 +94,7 @@ class Parser:
             return self.current_command[1:]
         elif self.command_type() == L_COMMAND:
             return self.current_command[1:-1]
-        raise Exception("symbol() is only for A_COMMANDS")
+        raise Exception("symbol() is only for A_COMMANDS or L_COMMANDS")
 
 
     def dest(self) -> str:
@@ -139,7 +142,7 @@ class Parser:
             semicolon_index = self.current_command.find(';')
             return self.current_command[semicolon_index+1:]
         raise Exception("jump() is only for C_COMMANDS")
-    
+        
     def change_current_command(self, command: str) -> None:
         self.current_command = command
         self.clean_input_lines[self.current_command_index] = self.current_command
